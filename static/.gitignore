@@ -1,0 +1,6 @@
+downloads/
+outputs/
+__pycache__/
+*.mp3
+*.wav
+.env

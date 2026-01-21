@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Video Transcriber</title>
+
+    <!-- jsPDF CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+
+            background:
+                radial-gradient(circle at 15% 25%, rgba(255,255,255,0.35) 0%, transparent 40%),
+                radial-gradient(circle at 85% 20%, rgba(255,255,255,0.3) 0%, transparent 45%),
+                radial-gradient(circle at 70% 85%, rgba(255,255,255,0.25) 0%, transparent 40%),
+                radial-gradient(circle at 30% 75%, rgba(255,255,255,0.2) 0%, transparent 35%),
+                linear-gradient(135deg, #3a0f5c, #6a0dad, #9b5de5, #5a189a);
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(16px);
+            border-radius: 24px;
+            padding: 35px;
+            width: 90%;
+            max-width: 900px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.45);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 30px;
+            margin-bottom: 8px;
+            color: #f7e9ff;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 14px;
+            margin-bottom: 28px;
+            color: #e9d5ff;
+        }
+
+        form {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 22px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 14px;
+            border-radius: 14px;
+            border: none;
+            outline: none;
+            font-size: 15px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #a450e4, #6a0dad);
+            color: #fff;
+            border: none;
+            border-radius: 14px;
+            padding: 14px 24px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .transcript-box {
+            background: rgba(255, 255, 255, 0.96);
+            color: #2b0436;
+            border-radius: 18px;
+            padding: 25px;
+            max-height: 420px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            line-height: 1.9;
+            font-size: 15px;
+            margin-bottom: 20px;
+        }
+
+        .download-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #7209b7, #560bad);
+            border-radius: 16px;
+            padding: 14px;
+            font-size: 15px;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 600px) {
+            form {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>🎧 Video Transcriber</h1>
+    <div class="subtitle">Convert YouTube videos into readable text</div>
+
+    <form method="POST">
+        <input type="text" name="url" placeholder="Paste YouTube video link here..." required>
+        <button type="submit">Transcribe</button>
+    </form>
+
+    {% if transcript %}
+    <div id="transcript" class="transcript-box">
+        {{ transcript }}
+    </div>
+
+    <button class="download-btn" onclick="downloadPDF()">
+        📄 Download as PDF
+    </button>
+    {% endif %}
+</div>
+
+<script>
+function downloadPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF("p", "mm", "a4");
+
+    const text = document.getElementById("transcript").innerText;
+
+    const marginLeft = 15;
+    const marginTop = 20;
+    const pageWidth = 180;
+    const pageHeight = 297;
+
+    doc.setFont("Times", "Normal");
+    doc.setFontSize(12);
+
+    const lines = doc.splitTextToSize(text, pageWidth);
+
+    let y = marginTop;
+
+    lines.forEach(line => {
+        if (y > pageHeight - 20) {
+            doc.addPage();
+            y = marginTop;
+        }
+        doc.text(line, marginLeft, y);
+        y += 7;
+    });
+
+    doc.save("transcript.pdf");
+}
+</script>
+
+
+</body>
+</html>
