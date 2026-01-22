@@ -40,7 +40,7 @@ video_transcriber/
 │   └── style.css
 ├── downloads/
 └── outputs/
-
+```
 ⚙️ Installation & Setup
 1️⃣ Clone the Repository
 git clone https://github.com/YOUR_USERNAME/ai-video-transcriber.git
@@ -91,4 +91,5 @@ yt-dlp
 FFmpeg
 
 Flask Community
+
 
